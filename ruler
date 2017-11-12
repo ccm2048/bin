@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#
+# Date: 2017-11-12
+# Description: Quick hack to recreate my previous 'ruler' script
+# Use Case: Print a 'ruler' on the screen to determine column location of text.
+
+drawRuler() {
+        i=0
+
+case $COLUMNS
+in
+	[89]?)
+		echo "80"
+		printf "                                                                               8\n"
+	;;
+
+	1??)
+		echo "100"
+		printf "                                                                                                   1\n"
+	;;
+esac
+				
+        while [ $i -lt $COLUMNS ]
+        do
+                ((i=i+1))
+                if [ $((i%10)) -eq 0 ]
+                then
+                        printf "|"
+                else
+                        printf "."
+                fi
+        done
+}
+
+##------------------------------------------------------------------------------
+## main
+##------------------------------------------------------------------------------
+
+if [ -n "$COLUMNS" ]
+then
+        drawRuler
+        exit
+fi
+
+if hash resize
+then
+        eval `resize`
+        drawRuler
+        exit
+fi
+
+if [ -z "$COLUMNS" ]
+then
+        COLUMNS=80
+        drawRuler
+        exit
+fi
+
+exit $?
